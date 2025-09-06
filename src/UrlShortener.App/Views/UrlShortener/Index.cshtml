@@ -1,0 +1,53 @@
+@model IEnumerable<UrlShortener.App.Models.ShortUrl>
+
+@{
+    ViewData["Title"] = "URL Shortener";
+}
+
+<form method="post" asp-action="Shortener">
+    <div class="mb-3">
+        <label class="form-label">Long URL</label>
+        <input class="form-control" type="url" name="url" required placeholder="https://example.com" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<hr />
+
+<div>
+    <a class="btn btn-danger" href="@Url.Action("Clear")">Clear</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Short Code</th>
+                <th scope="col">Created At</th>
+                <th scope="col">Original URL</th>
+                <th scope="col">Short URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                foreach (var shortUrl in Model)
+                {
+                    <tr>
+                        <th scope="row">@shortUrl.ShortCode</th>
+                        <td>@shortUrl.CreatedAt</td>
+                        <td>@shortUrl.OriginalUrl</td>
+                        <td>
+                            <a class="link" href="@shortUrl.ShortCode" target="_blank">@shortUrl.ShortUrlFull</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        function clear() {
+
+        }
+    </script>
+}

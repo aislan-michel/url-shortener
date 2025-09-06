@@ -1,7 +1,11 @@
+using UrlShortener.App.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
 
 var app = builder.Build();
 
