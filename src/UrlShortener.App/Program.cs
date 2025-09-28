@@ -7,6 +7,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -2,6 +2,20 @@
 
 @{
     ViewData["Title"] = "URL Shortener";
+    var errors = ViewData["Errors"] as IList<string>;
+}
+
+@if (errors != null && errors.Any())
+{
+    <div class="alert alert-danger">
+        <p>Please correct the following errors:</p>
+        <ul>
+            @foreach (var error in errors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
 }
 
 <form method="post" asp-action="Shortener">
@@ -33,9 +47,25 @@
                     <tr>
                         <th scope="row">@shortUrl.ShortCode</th>
                         <td>@shortUrl.CreatedAt.ToString("MM/dd/yyyy")</td>
-                        <td>@shortUrl.OriginalUrl</td>
                         <td>
-                            <a class="link" href="@shortUrl.ShortCode" target="_blank">@shortUrl.ShortUrlFull</a>
+                            <span>
+                                @shortUrl.OriginalUrl 
+                            </span>
+                            <span 
+                                class="copy"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="click to copy original url" 
+                                onclick="copyText('@shortUrl.OriginalUrl ')"
+                                ><i class="bi bi-copy"></i></span>
+                        </td>
+                        <td>
+                            <span>
+                                <a class="link" href="@shortUrl.ShortCode" target="_blank">@shortUrl.ShortUrlFull</a>
+                            </span>
+                            <span 
+                                class="copy"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="click to copy short url" 
+                                onclick="copyText('@shortUrl.ShortUrlFull')"
+                                ><i class="bi bi-copy"></i></span>
                         </td>
                     </tr>
                 }
