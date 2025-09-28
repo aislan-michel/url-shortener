@@ -32,17 +32,17 @@ public class UrlShortenerController : Controller
     }
 
     [HttpPost("UrlShortener/Create")]
-    public async Task<IActionResult> Create(string url, DateOnly? expires = null, string? shortCode = null)
+    public async Task<IActionResult> Create(CreateShortUrl createShortUrl)
     {
-        if (string.IsNullOrWhiteSpace(url))
+        if (string.IsNullOrWhiteSpace(createShortUrl.Url))
         {
-            _errors.Add($"url {url} is not valid");
+            _errors.Add($"url {createShortUrl.Url} is not valid");
             return RedirectToAction(nameof(Index));
         }
 
         var httpClient = _httpClientFactory.CreateClient("validate-url");
 
-        httpClient.BaseAddress = new Uri(url);
+        httpClient.BaseAddress = new Uri(createShortUrl.Url);
 
         var request = new HttpRequestMessage();
 
@@ -52,19 +52,20 @@ public class UrlShortenerController : Controller
 
             if (!response.IsSuccessStatusCode)
             {
-                _errors.Add($"url {url} is not valid");
+                _errors.Add($"url {createShortUrl.Url} is not valid");
                 return RedirectToAction(nameof(Index));
             }
         }
         catch (Exception e)
         {
-            _errors.Add($"url {url} is not valid");
+            _errors.Add($"url {createShortUrl.Url} is not valid");
             return RedirectToAction(nameof(Index));
         }
 
         var host = Request.Host.Value!;
 
-        _shortUrlRepository.Add(new ShortUrl(shortCode, url, host, expires));
+        _shortUrlRepository.Add(new ShortUrl(
+            createShortUrl.ShortCode, createShortUrl.Url, host, createShortUrl.Expires));
 
         return RedirectToAction(nameof(Index));
     }
