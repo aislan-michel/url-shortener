@@ -34,6 +34,12 @@ public class UrlShortenerController : Controller
     [HttpPost("UrlShortener/Create")]
     public async Task<IActionResult> Create(string url, DateOnly? expires = null)
     {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            _errors.Add($"url {url} is not valid");
+            return RedirectToAction(nameof(Index));
+        }
+
         var httpClient = _httpClientFactory.CreateClient("validate-url");
 
         httpClient.BaseAddress = new Uri(url);
@@ -68,6 +74,20 @@ public class UrlShortenerController : Controller
     {
         _shortUrlRepository.Clear();
 
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("UrlShortener/Update/{shortCode}")]
+    public IActionResult Update(string shortCode)
+    {
+        var shortUrl = _shortUrlRepository.Get(shortCode);
+
+        return View(shortUrl);
+    }
+
+    [HttpPost("UrlShortener/Update/{shortCode}")]
+    public IActionResult Update(string shortCode, object model)
+    {
         return RedirectToAction(nameof(Index));
     }
 }
