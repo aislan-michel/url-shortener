@@ -32,7 +32,7 @@ public class UrlShortenerController : Controller
     }
 
     [HttpPost("UrlShortener/Create")]
-    public async Task<IActionResult> Create(string url, DateOnly? expires = null)
+    public async Task<IActionResult> Create(string url, DateOnly? expires = null, string? shortCode = null)
     {
         if (string.IsNullOrWhiteSpace(url))
         {
@@ -64,7 +64,7 @@ public class UrlShortenerController : Controller
 
         var host = Request.Host.Value!;
 
-        _shortUrlRepository.Add(new ShortUrl(url, host, expires));
+        _shortUrlRepository.Add(new ShortUrl(shortCode, url, host, expires));
 
         return RedirectToAction(nameof(Index));
     }
@@ -82,12 +82,18 @@ public class UrlShortenerController : Controller
     {
         var shortUrl = _shortUrlRepository.Get(shortCode);
 
+        _logger.LogInformation("expires in " + shortUrl.Expires);
+
         return View(shortUrl);
     }
 
     [HttpPost("UrlShortener/Update/{shortCode}")]
-    public IActionResult Update(string shortCode, object model)
+    public IActionResult Update(string shortCode, DateOnly? expires = null)
     {
+        var shortUrl = _shortUrlRepository.Get(shortCode)!;
+
+        shortUrl.UpdateExpiresDate(expires);
+
         return RedirectToAction(nameof(Index));
     }
 }

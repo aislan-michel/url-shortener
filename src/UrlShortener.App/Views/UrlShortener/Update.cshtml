@@ -8,7 +8,7 @@
 <form method="post" asp-action="Update" asp-route-id="@Model.ShortCode">
     <div class="mb-3">
         <label class="form-label mt-2">Expires in</label>
-        <input class="form-control" type="date" name="expires" value="@Model.Expires"/>
+        <input class="form-control" type="date" name="expires" value='@(Model.Expires.HasValue ? Model.Expires.Value.ToString("yyyy-MM-dd") : "")'/>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

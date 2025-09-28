@@ -20,7 +20,10 @@
 
 <form method="post" asp-action="Create">
     <div class="mb-3">
-        <label class="form-label">Long URL</label>
+        <label class="form-label">Short code</label>
+        <input class="form-control" type="text" name="shortCode" placeholder="my-links"/>
+
+        <label class="form-label mt-2">Long URL</label>
         <input class="form-control" type="url" name="url" required placeholder="https://example.com" />
         
         <label class="form-label mt-2">Expires in</label>
@@ -51,7 +54,7 @@
                 {
                     <tr>
                         <th scope="row">@shortUrl.ShortCode</th>
-                        <td>@shortUrl.CreatedAt.ToString("MM/dd/yyyy")</td>
+                        <td>@shortUrl.CreatedAt.ToString("dd/MM/yyyy")</td>
                         <td>
                             <span>
                                 @shortUrl.OriginalUrl 
@@ -72,7 +75,7 @@
                                 onclick="copyText('@shortUrl.ShortUrlFull')"
                                 ><i class="bi bi-copy"></i></span>
                         </td>
-                        <td>@(shortUrl.Expires.HasValue ? shortUrl.Expires.Value.ToString("MM/dd/yyyy") : "N/A")</td>
+                        <td>@(shortUrl.Expires.HasValue ? shortUrl.Expires.Value.ToString("dd/MM/yyyy") : "N/A")</td>
                         <td>
                             <a class="btn btn-outline-dark" asp-action="Update" asp-route-id="@shortUrl.ShortCode">update</a>
                         </td>
