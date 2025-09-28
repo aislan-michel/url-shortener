@@ -32,7 +32,7 @@
                 {
                     <tr>
                         <th scope="row">@shortUrl.ShortCode</th>
-                        <td>@shortUrl.CreatedAt</td>
+                        <td>@shortUrl.CreatedAt.ToString("MM/dd/yyyy")</td>
                         <td>@shortUrl.OriginalUrl</td>
                         <td>
                             <a class="link" href="@shortUrl.ShortCode" target="_blank">@shortUrl.ShortUrlFull</a>

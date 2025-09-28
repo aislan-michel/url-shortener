@@ -28,9 +28,7 @@ public class UrlShortenerController : Controller
     {
         var host = Request.Host.Value!;
 
-        var shortCode = Guid.NewGuid().ToString("N").Substring(0, 8).ToLowerInvariant();
-
-        _shortUrlRepository.Add(new ShortUrl(url, shortCode, host));
+        _shortUrlRepository.Add(new ShortUrl(url, host));
 
         return RedirectToAction(nameof(Index));
     }
