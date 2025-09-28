@@ -31,8 +31,8 @@ public class UrlShortenerController : Controller
         return View(shortUrls);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Shortener(string url, DateOnly expires)
+    [HttpPost("UrlShortener/Create")]
+    public async Task<IActionResult> Create(string url, DateOnly? expires = null)
     {
         var httpClient = _httpClientFactory.CreateClient("validate-url");
 

@@ -18,7 +18,7 @@
     </div>
 }
 
-<form method="post" asp-action="Shortener">
+<form method="post" asp-action="Create">
     <div class="mb-3">
         <label class="form-label">Long URL</label>
         <input class="form-control" type="url" name="url" required placeholder="https://example.com" />
@@ -41,6 +41,7 @@
                 <th scope="col">Original URL</th>
                 <th scope="col">Short URL</th>
                 <th scope="col">Expires in</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -72,6 +73,9 @@
                                 ><i class="bi bi-copy"></i></span>
                         </td>
                         <td>@(shortUrl.Expires == null ? "N/A" : shortUrl.Expires)</td>
+                        <td>
+                            <a class="btn btn-warning">update</a>
+                        </td>
                     </tr>
                 }
             }
