@@ -32,7 +32,7 @@ public class UrlShortenerController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Shortener(string url)
+    public async Task<IActionResult> Shortener(string url, DateOnly expires)
     {
         var httpClient = _httpClientFactory.CreateClient("validate-url");
 
@@ -58,7 +58,7 @@ public class UrlShortenerController : Controller
 
         var host = Request.Host.Value!;
 
-        _shortUrlRepository.Add(new ShortUrl(url, host));
+        _shortUrlRepository.Add(new ShortUrl(url, host, expires));
 
         return RedirectToAction(nameof(Index));
     }

@@ -31,6 +31,11 @@ public class HomeController : Controller
             return NotFound();
         }
 
+        if (shortUrl.Expired())
+        {
+            return BadRequest();
+        }
+
         var originalUrl = shortUrl.OriginalUrl;
 
         return Redirect(originalUrl);

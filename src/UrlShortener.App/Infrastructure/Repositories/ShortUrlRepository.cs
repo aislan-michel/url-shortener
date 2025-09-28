@@ -4,7 +4,10 @@ namespace UrlShortener.App.Infrastructure.Repositories;
 
 public sealed class ShortUrlRepository : IShortUrlRepository
 {
-    private static IList<ShortUrl> ShortUrls = [];
+    private static IList<ShortUrl> ShortUrls =
+    [
+        new("https://example.com", "localhost:5282/")
+    ];
 
     public void Add(ShortUrl shortUrl)
     {

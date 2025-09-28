@@ -22,6 +22,9 @@
     <div class="mb-3">
         <label class="form-label">Long URL</label>
         <input class="form-control" type="url" name="url" required placeholder="https://example.com" />
+        
+        <label class="form-label mt-2">Expires in</label>
+        <input class="form-control" type="date" name="expires"/>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -37,6 +40,7 @@
                 <th scope="col">Created At</th>
                 <th scope="col">Original URL</th>
                 <th scope="col">Short URL</th>
+                <th scope="col">Expires in</th>
             </tr>
         </thead>
         <tbody>
@@ -67,6 +71,7 @@
                                 onclick="copyText('@shortUrl.ShortUrlFull')"
                                 ><i class="bi bi-copy"></i></span>
                         </td>
+                        <td>@(shortUrl.Expires == null ? "N/A" : shortUrl.Expires)</td>
                     </tr>
                 }
             }
