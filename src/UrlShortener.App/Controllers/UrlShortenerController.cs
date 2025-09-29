@@ -43,7 +43,7 @@ public class UrlShortenerController : Controller
     }
 
     [HttpGet("UrlShortener/Create")]
-    public async Task<IActionResult> Create()
+    public IActionResult Create()
     {
         return View(new CreateShortUrl());
     }
@@ -82,14 +82,6 @@ public class UrlShortenerController : Controller
 
         _shortUrlRepository.Add(new ShortUrl(
             createShortUrl.ShortCode, createShortUrl.Url, host, createShortUrl.Expires));
-
-        return RedirectToAction(nameof(Index));
-    }
-
-    [HttpGet("UrlShortener/Clear")]
-    public IActionResult Clear()
-    {
-        _shortUrlRepository.Clear();
 
         return RedirectToAction(nameof(Index));
     }
