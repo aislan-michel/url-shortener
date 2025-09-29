@@ -1,0 +1,43 @@
+@model UrlShortener.App.Models.CreateShortUrl
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <p>Please correct the following errors:</p>
+        <ul>
+            @foreach (var modelStateEntry in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelStateEntry.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
+
+<form method="post" asp-action="Create">
+    <div>
+        <label class="form-label">Short code</label>
+        <input class="form-control" type="text" name="shortCode" placeholder="my-links" value="@Model.ShortCode"/>
+    </div>
+
+    <div class="mt-2">
+        <label class="form-label">Long URL</label>
+        <input class="form-control" type="url" name="url" placeholder="https://example.com" value="@Model.Url" />
+    </div>
+
+    <div class="mt-2">
+        <label class="form-label">Expires in</label>
+        <input class="form-control" type="date" name="expires" value='@(Model.Expires.HasValue ? Model.Expires.Value.ToString("yyyy-MM-dd") : "")'/>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a class="btn btn-secondary" href='@Url.Action("Index", "UrlShortener")'>Back to list</a>
+    </div>
+</form>

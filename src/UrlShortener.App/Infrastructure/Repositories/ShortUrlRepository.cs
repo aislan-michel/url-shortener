@@ -28,4 +28,9 @@ public sealed class ShortUrlRepository : IShortUrlRepository
     {
         return ShortUrls.ToArray();
     }
+
+    public void Delete(string shortCode)
+    {
+        ShortUrls.Remove(ShortUrls.First(x => x.ShortCode == shortCode));
+    }
 }

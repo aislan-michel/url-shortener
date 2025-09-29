@@ -8,4 +8,5 @@ public interface IShortUrlRepository
     void Clear();
     ShortUrl? Get(string shortCode);
     ShortUrl[] Get();
+    void Delete(string shortCode);
 }

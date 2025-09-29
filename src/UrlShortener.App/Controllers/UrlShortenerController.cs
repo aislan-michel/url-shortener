@@ -9,7 +9,6 @@ public class UrlShortenerController : Controller
     private readonly ILogger<UrlShortenerController> _logger;
     private readonly IShortUrlRepository _shortUrlRepository;
     private readonly IHttpClientFactory _httpClientFactory;
-    private static IList<string> _errors = [];
 
     public UrlShortenerController(
         ILogger<UrlShortenerController> logger,
@@ -24,7 +23,6 @@ public class UrlShortenerController : Controller
     [HttpGet("UrlShortener")]
     public IActionResult Index(string? shortCode = null)
     {
-        ViewData["Errors"] = _errors;
         ViewData["shortCode"] = shortCode;
 
         var shortUrls = _shortUrlRepository.Get();
@@ -44,13 +42,18 @@ public class UrlShortenerController : Controller
         return View(new List<ShortUrl>() { shortUrl });
     }
 
+    [HttpGet("UrlShortener/Create")]
+    public async Task<IActionResult> Create()
+    {
+        return View(new CreateShortUrl());
+    }
+
     [HttpPost("UrlShortener/Create")]
     public async Task<IActionResult> Create(CreateShortUrl createShortUrl)
     {
-        if (string.IsNullOrWhiteSpace(createShortUrl.Url))
+        if (!ModelState.IsValid)
         {
-            _errors.Add($"url {createShortUrl.Url} is not valid");
-            return RedirectToAction(nameof(Index));
+            return View(createShortUrl);
         }
 
         var httpClient = _httpClientFactory.CreateClient("validate-url");
@@ -65,14 +68,14 @@ public class UrlShortenerController : Controller
 
             if (!response.IsSuccessStatusCode)
             {
-                _errors.Add($"url {createShortUrl.Url} is not valid");
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("url", $"url {createShortUrl.Url} is not valid");
+                return View();
             }
         }
         catch (Exception e)
         {
-            _errors.Add($"url {createShortUrl.Url} is not valid");
-            return RedirectToAction(nameof(Index));
+            ModelState.AddModelError("url", $"url {createShortUrl.Url} is not valid");
+            return View();
         }
 
         var host = Request.Host.Value!;
@@ -105,6 +108,14 @@ public class UrlShortenerController : Controller
         var shortUrl = _shortUrlRepository.Get(shortCode)!;
 
         shortUrl.UpdateExpiresDate(expires);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("UrlShortener/Delete/{shortCode}")]
+    public IActionResult Delete(string shortCode)
+    {
+        _shortUrlRepository.Delete(shortCode);
 
         return RedirectToAction(nameof(Index));
     }

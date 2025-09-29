@@ -11,4 +11,5 @@
         <input class="form-control" type="date" name="expires" value='@(Model.Expires.HasValue ? Model.Expires.Value.ToString("yyyy-MM-dd") : "")'/>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
+    <a class="btn btn-secondary" href='@Url.Action("Index", "UrlShortener")'>Back to list</a>
 </form>

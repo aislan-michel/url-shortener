@@ -6,7 +6,7 @@ public sealed class CreateShortUrl
 {
     public string? ShortCode { get; set; } = null;
 
-    [Required]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "The Long URL field is required.")]
     public string Url { get; set; } = string.Empty;
     
     public DateOnly? Expires { get; set; } = null;
