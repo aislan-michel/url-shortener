@@ -22,13 +22,26 @@ public class UrlShortenerController : Controller
     }
 
     [HttpGet("UrlShortener")]
-    public IActionResult Index()
+    public IActionResult Index(string? shortCode = null)
     {
+        ViewData["Errors"] = _errors;
+        ViewData["shortCode"] = shortCode;
+
         var shortUrls = _shortUrlRepository.Get();
 
-        ViewData["Errors"] = _errors;
+        if (string.IsNullOrWhiteSpace(shortCode))
+        {
+            return View(shortUrls);
+        }
 
-        return View(shortUrls);
+        var shortUrl = shortUrls.FirstOrDefault(x => x.ShortCode == shortCode);
+
+        if (shortUrl == null)
+        {
+            return View(new List<ShortUrl>());
+        }
+
+        return View(new List<ShortUrl>() { shortUrl });
     }
 
     [HttpPost("UrlShortener/Create")]
@@ -82,8 +95,6 @@ public class UrlShortenerController : Controller
     public IActionResult Update(string shortCode)
     {
         var shortUrl = _shortUrlRepository.Get(shortCode);
-
-        _logger.LogInformation("expires in " + shortUrl.Expires);
 
         return View(shortUrl);
     }
