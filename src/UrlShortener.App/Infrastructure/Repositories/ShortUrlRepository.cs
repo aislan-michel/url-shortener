@@ -6,7 +6,8 @@ public sealed class ShortUrlRepository : IShortUrlRepository
 {
     private static IList<ShortUrl> ShortUrls =
     [
-        new("https://example.com", "localhost:5282/")
+        new("https://example.com", "localhost:5282/"),
+        new("insta", "https://instagram.com", "localhost:5282/", false)
     ];
 
     public void Add(ShortUrl shortUrl)

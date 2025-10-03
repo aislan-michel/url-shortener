@@ -25,6 +25,7 @@
             <tr>
                 <th scope="col">Short Code</th>
                 <th scope="col">Created At</th>
+                <th scope="col">Status</th>
                 <th scope="col">Original URL</th>
                 <th scope="col">Short URL</th>
                 <th scope="col">Expires in</th>
@@ -39,6 +40,16 @@
                     <tr>
                         <th scope="row">@shortUrl.ShortCode</th>
                         <td>@shortUrl.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if(shortUrl.Active)
+                            {
+                                <a href='@Url.Action("Deactivate", "UrlShortener", new { shortCode = shortUrl.ShortCode })' class="badge bg-success">Active</a>
+                            }
+                            else
+                            {
+                                <a href='@Url.Action("Activate", "UrlShortener", new { shortCode = shortUrl.ShortCode })' class="badge bg-danger">Inactive</a>
+                            }
+                        </td>
                         <td>
                             <span>
                                 @shortUrl.OriginalUrl 

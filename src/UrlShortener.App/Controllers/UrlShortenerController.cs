@@ -32,14 +32,14 @@ public class UrlShortenerController : Controller
             return View(shortUrls);
         }
 
-        var shortUrl = shortUrls.FirstOrDefault(x => x.ShortCode == shortCode);
+        shortUrls = shortUrls.Where(x => x.ShortCode.Contains(shortCode)).ToArray();
 
-        if (shortUrl == null)
+        if (shortUrls == null || !shortUrls.Any())
         {
             return View(new List<ShortUrl>());
         }
 
-        return View(new List<ShortUrl>() { shortUrl });
+        return View(shortUrls);
     }
 
     [HttpGet("UrlShortener/Create")]
@@ -69,13 +69,13 @@ public class UrlShortenerController : Controller
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("url", $"url {createShortUrl.Url} is not valid");
-                return View();
+                return View(createShortUrl);
             }
         }
         catch (Exception e)
         {
             ModelState.AddModelError("url", $"url {createShortUrl.Url} is not valid");
-            return View();
+            return View(createShortUrl);
         }
 
         var host = Request.Host.Value!;
@@ -108,6 +108,26 @@ public class UrlShortenerController : Controller
     public IActionResult Delete(string shortCode)
     {
         _shortUrlRepository.Delete(shortCode);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("UrlShortener/Activate/{shortCode}")]
+    public IActionResult Activate(string shortCode)
+    {
+        var shortUrl = _shortUrlRepository.Get(shortCode)!;
+
+        shortUrl.Activate();
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("UrlShortener/Deactivate/{shortCode}")]
+    public IActionResult Deactivate(string shortCode)
+    {
+        var shortUrl = _shortUrlRepository.Get(shortCode)!;
+
+        shortUrl.Deactivate();
 
         return RedirectToAction(nameof(Index));
     }

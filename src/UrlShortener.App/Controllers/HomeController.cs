@@ -33,7 +33,12 @@ public class HomeController : Controller
 
         if (shortUrl.Expired())
         {
-            return BadRequest();
+            return View("Expired");
+        }
+
+        if (!shortUrl.Active)
+        {
+            return View("Inactive");
         }
 
         var originalUrl = shortUrl.OriginalUrl;
