@@ -41,6 +41,7 @@ public sealed class ShortUrl
     public DateTime CreatedAt { get; private set; } = DateTime.Now;
     public DateOnly? Expires { get; private set; } = null;
     public bool Active { get; private set; } = true;
+    public int ClickCounter { get; private set; } = 0;
 
     private string GenerateShortUrlFull(string baseUrl, string shortCode)
     {
@@ -79,5 +80,10 @@ public sealed class ShortUrl
     public void Deactivate()
     {
         Active = false;
+    }
+
+    public void Clicked()
+    {
+        ClickCounter += 1;
     }
 }

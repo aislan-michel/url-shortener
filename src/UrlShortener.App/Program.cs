@@ -1,4 +1,5 @@
 using UrlShortener.App.Infrastructure.Repositories;
+using UrlShortener.App.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
+builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 
 builder.Services.AddHttpClient();
 

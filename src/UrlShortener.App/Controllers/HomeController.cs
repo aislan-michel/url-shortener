@@ -41,6 +41,8 @@ public class HomeController : Controller
             return View("Inactive");
         }
 
+        shortUrl.Clicked();
+
         var originalUrl = shortUrl.OriginalUrl;
 
         return Redirect(originalUrl);

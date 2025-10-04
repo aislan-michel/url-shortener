@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using UrlShortener.App.Infrastructure.Repositories;
+using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models;
 
 namespace UrlShortener.App.Controllers;
@@ -9,15 +10,18 @@ public class UrlShortenerController : Controller
     private readonly ILogger<UrlShortenerController> _logger;
     private readonly IShortUrlRepository _shortUrlRepository;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IQrCodeService _qrCodeService;
 
     public UrlShortenerController(
         ILogger<UrlShortenerController> logger,
         IShortUrlRepository shortUrlRepository,
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        IQrCodeService qrCodeService)
     {
         _logger = logger;
         _shortUrlRepository = shortUrlRepository;
         _httpClientFactory = httpClientFactory;
+        _qrCodeService = qrCodeService;
     }
 
     [HttpGet("UrlShortener")]
@@ -130,5 +134,13 @@ public class UrlShortenerController : Controller
         shortUrl.Deactivate();
 
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("UrlShortener/QrCode/{shortCode}")]
+    public IActionResult QrCode(string shortCode)
+    {
+        var shortUrl = _shortUrlRepository.Get(shortCode)!;
+
+        return Json(new { qrCodeBytes = _qrCodeService.Generate($"https://{shortUrl.ShortUrlFull}") });
     }
 }

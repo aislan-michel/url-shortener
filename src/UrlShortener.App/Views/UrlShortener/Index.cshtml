@@ -18,6 +18,7 @@
 
         <button type="submit" class="btn btn-primary">Search</button>
         <a href="@Url.Action("Index", "UrlShortener")" class="btn btn-secondary">Clear filters</a>
+        <a href="@Url.Action("Index", "UrlShortener")" class="btn btn-secondary">Reload</a>
     </form>
 
     <table class="table mt-2">
@@ -62,7 +63,7 @@
                         </td>
                         <td>
                             <span>
-                                <a class="link" href="@shortUrl.ShortCode" target="_blank">@shortUrl.ShortUrlFull</a>
+                                <a class="link" href="@shortUrl.ShortCode" target="_blank">@shortUrl.ShortUrlFull</a> @shortUrl.ClickCounter clicks
                             </span>
                             <span 
                                 class="copy"
@@ -72,12 +73,12 @@
                         </td>
                         <td>@(shortUrl.Expires.HasValue ? shortUrl.Expires.Value.ToString("dd/MM/yyyy") : "N/A")</td>
                         <td>
+                            <button type="button" class="btn btn-outline-dark" onclick="generateQrCode('@shortUrl.ShortCode')">QR Code</button>
                             <a class="btn btn-outline-dark" asp-action="Update" asp-route-id="@shortUrl.ShortCode">update</a>
                             <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@(shortUrl.ShortCode)">delete</button>
                         </td>
                     </tr>
 
-                    <!-- Modal -->
                     <div class="modal fade" id="deleteModal-@(shortUrl.ShortCode)" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -104,5 +105,32 @@
         </tbody>
     </table>
 </div>
+
+
+<div class="modal fade" id="qrCodeModal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="qrCodeModalLabel">Scan</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div id="qrCodeModalBody" class="modal-body">
+        </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function generateQrCode(shortCode){
+            $.get(`/UrlShortener/QrCode/${shortCode}`, function(data) {
+                $("#qrCodeModalBody").html(`
+                    <img src='data:image/png;base64,${data.qrCodeBytes}' />
+                `);
+                $("#qrCodeModal").modal('show');
+            });
+        }
+    </script>
+}
 
 
