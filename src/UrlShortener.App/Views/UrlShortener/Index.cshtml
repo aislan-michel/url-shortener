@@ -125,7 +125,7 @@
     <script>
         function generateQrCode(shortCode){
             $.get(`/UrlShortener/QrCode/${shortCode}`, function(data) {
-                $("#qrCodeModalBody").html(`
+                $("#qrCodeModalBody").empty().html(`
                     <img src='data:image/png;base64,${data.qrCodeBytes}' />
                 `);
                 $("#qrCodeModal").modal('show');
