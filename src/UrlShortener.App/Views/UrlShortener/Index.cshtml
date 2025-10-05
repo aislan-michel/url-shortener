@@ -74,6 +74,7 @@
                         <td>@(shortUrl.Expires.HasValue ? shortUrl.Expires.Value.ToString("dd/MM/yyyy") : "N/A")</td>
                         <td>
                             <button type="button" class="btn btn-outline-dark" onclick="generateQrCode('@shortUrl.ShortCode')">QR Code</button>
+                            <a class="btn btn-outline-dark" asp-action="Details" asp-route-id="@shortUrl.ShortCode">details</a>
                             <a class="btn btn-outline-dark" asp-action="Update" asp-route-id="@shortUrl.ShortCode">update</a>
                             <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@(shortUrl.ShortCode)">delete</button>
                         </td>

@@ -90,6 +90,12 @@ public class UrlShortenerController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet("UrlShortener/Details/{shortCode}")]
+    public IActionResult Details(string shortCode)
+    {
+        return View(_shortUrlRepository.Get(shortCode)!);
+    }
+
     [HttpGet("UrlShortener/Update/{shortCode}")]
     public IActionResult Update(string shortCode)
     {

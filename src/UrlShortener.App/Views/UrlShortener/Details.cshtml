@@ -1,0 +1,27 @@
+@model UrlShortener.App.Models.ShortUrl
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<ul class="list-group">
+    <li class="list-group-item">Original URL: @Model.OriginalUrl</li>
+    <li class="list-group-item">Short Code: @Model.ShortCode</li>
+    <li class="list-group-item">Short URL: @Model.ShortUrlFull</li>
+    <li class="list-group-item">Created at: @Model.CreatedAt.ToString("dd/MM/yyyy")</li>
+    <li class="list-group-item">Expires in: @(Model.Expires.HasValue ? Model.Expires.Value.ToString("dd/MM/yyyy") : "N/A")</li>
+    <li class="list-group-item">
+        Status:                             
+        @if(Model.Active)
+        {
+            <span class="badge bg-success">Active</span>
+        }
+        else
+        {
+            <span class="badge bg-danger">Inactive</span>
+        }
+    </li>
+    <li class="list-group-item">Clicks: @Model.ClickCounter</li>
+</ul>
+
+<a class="btn btn-secondary mt-3" asp-action="Index">Back to list</a>
