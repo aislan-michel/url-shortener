@@ -5,31 +5,20 @@ using UrlShortener.App.Models;
 
 namespace UrlShortener.App.Controllers;
 
-public class UrlShortenerController : Controller
+[Route("UrlShortener")]
+public class UrlShortenerController(
+    ILogger<UrlShortenerController> logger,
+    IShortUrlRepository shortUrlRepository,
+    IHttpClientFactory httpClientFactory,
+    IQrCodeService qrCodeService)
+    : Controller
 {
-    private readonly ILogger<UrlShortenerController> _logger;
-    private readonly IShortUrlRepository _shortUrlRepository;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IQrCodeService _qrCodeService;
-
-    public UrlShortenerController(
-        ILogger<UrlShortenerController> logger,
-        IShortUrlRepository shortUrlRepository,
-        IHttpClientFactory httpClientFactory,
-        IQrCodeService qrCodeService)
-    {
-        _logger = logger;
-        _shortUrlRepository = shortUrlRepository;
-        _httpClientFactory = httpClientFactory;
-        _qrCodeService = qrCodeService;
-    }
-
-    [HttpGet("UrlShortener")]
+    [HttpGet("")]
     public IActionResult Index(string? shortCode = null)
     {
         ViewData["shortCode"] = shortCode;
 
-        var shortUrls = _shortUrlRepository.Get();
+        var shortUrls = shortUrlRepository.Get();
 
         if (string.IsNullOrWhiteSpace(shortCode))
         {
@@ -38,7 +27,7 @@ public class UrlShortenerController : Controller
 
         shortUrls = shortUrls.Where(x => x.ShortCode.Contains(shortCode)).ToArray();
 
-        if (shortUrls == null || !shortUrls.Any())
+        if (shortUrls.Length == 0)
         {
             return View(new List<ShortUrl>());
         }
@@ -46,13 +35,13 @@ public class UrlShortenerController : Controller
         return View(shortUrls);
     }
 
-    [HttpGet("UrlShortener/Create")]
+    [HttpGet("Create")]
     public IActionResult Create()
     {
         return View(new CreateShortUrl());
     }
 
-    [HttpPost("UrlShortener/Create")]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateShortUrl createShortUrl)
     {
         if (!ModelState.IsValid)
@@ -60,7 +49,7 @@ public class UrlShortenerController : Controller
             return View(createShortUrl);
         }
 
-        var httpClient = _httpClientFactory.CreateClient("validate-url");
+        var httpClient = httpClientFactory.CreateClient("validate-url");
 
         httpClient.BaseAddress = new Uri(createShortUrl.Url);
 
@@ -84,69 +73,61 @@ public class UrlShortenerController : Controller
 
         var host = Request.Host.Value!;
 
-        _shortUrlRepository.Add(new ShortUrl(
+        shortUrlRepository.Add(new ShortUrl(
             createShortUrl.ShortCode, createShortUrl.Url, host, createShortUrl.Expires));
 
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet("UrlShortener/Details/{shortCode}")]
+    [HttpGet("Details/{shortCode}")]
     public IActionResult Details(string shortCode)
     {
-        return View(_shortUrlRepository.Get(shortCode)!);
+        return View(shortUrlRepository.Get(shortCode)!);
     }
 
-    [HttpGet("UrlShortener/Update/{shortCode}")]
+    [HttpGet("Update/{shortCode}")]
     public IActionResult Update(string shortCode)
     {
-        var shortUrl = _shortUrlRepository.Get(shortCode);
-
-        return View(shortUrl);
+        return View(shortUrlRepository.Get(shortCode));
     }
 
-    [HttpPost("UrlShortener/Update/{shortCode}")]
+    [HttpPost("Update/{shortCode}")]
     public IActionResult Update(string shortCode, DateOnly? expires = null)
     {
-        var shortUrl = _shortUrlRepository.Get(shortCode)!;
-
-        shortUrl.UpdateExpiresDate(expires);
+        shortUrlRepository.Get(shortCode)!.UpdateExpiresDate(expires);
 
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet("UrlShortener/Delete/{shortCode}")]
+    [HttpGet("Delete/{shortCode}")]
     public IActionResult Delete(string shortCode)
     {
-        _shortUrlRepository.Delete(shortCode);
+        shortUrlRepository.Delete(shortCode);
 
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet("UrlShortener/Activate/{shortCode}")]
+    [HttpGet("Activate/{shortCode}")]
     public IActionResult Activate(string shortCode)
     {
-        var shortUrl = _shortUrlRepository.Get(shortCode)!;
-
-        shortUrl.Activate();
+        shortUrlRepository.Get(shortCode)!.Activate();
 
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet("UrlShortener/Deactivate/{shortCode}")]
+    [HttpGet("Deactivate/{shortCode}")]
     public IActionResult Deactivate(string shortCode)
     {
-        var shortUrl = _shortUrlRepository.Get(shortCode)!;
-
-        shortUrl.Deactivate();
+        shortUrlRepository.Get(shortCode)!.Deactivate();
 
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet("UrlShortener/QrCode/{shortCode}")]
+    [HttpGet("QrCode/{shortCode}")]
     public IActionResult QrCode(string shortCode)
     {
-        var shortUrl = _shortUrlRepository.Get(shortCode)!;
+        var shortUrl = shortUrlRepository.Get(shortCode)!;
 
-        return Json(new { qrCodeBytes = _qrCodeService.Generate($"https://{shortUrl.ShortUrlFull}") });
+        return Json(new { qrCodeBytes = qrCodeService.Generate($"https://{shortUrl.ShortUrlFull}") });
     }
 }
