@@ -22,7 +22,8 @@ public sealed class ShortUrlRepository : IShortUrlRepository
 
     public ShortUrl? Get(string shortCode)
     {
-        return ShortUrls.FirstOrDefault(x => x.ShortCode == shortCode);
+        return ShortUrls.FirstOrDefault(x =>
+            string.Equals(x.ShortCode, shortCode, StringComparison.OrdinalIgnoreCase));
     }
 
     public ShortUrl[] Get()
@@ -32,6 +33,10 @@ public sealed class ShortUrlRepository : IShortUrlRepository
 
     public void Delete(string shortCode)
     {
-        ShortUrls.Remove(ShortUrls.First(x => x.ShortCode == shortCode));
+        var existing = Get(shortCode);
+        if (existing is not null)
+        {
+            ShortUrls.Remove(existing);
+        }
     }
 }

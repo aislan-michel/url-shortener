@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using UrlShortener.App.Infrastructure.Repositories;
+using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models;
 
 namespace UrlShortener.App.Controllers;
@@ -8,12 +8,12 @@ namespace UrlShortener.App.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IShortUrlRepository _shortUrlRepository;
+    private readonly IShortUrlService _shortUrlService;
 
-    public HomeController(ILogger<HomeController> logger, IShortUrlRepository shortUrlRepository)
+    public HomeController(ILogger<HomeController> logger, IShortUrlService shortUrlService)
     {
         _logger = logger;
-        _shortUrlRepository = shortUrlRepository;
+        _shortUrlService = shortUrlService;
     }
 
     [HttpGet("{shortCode?}")]
@@ -24,7 +24,7 @@ public class HomeController : Controller
             return View();
         }
 
-        var shortUrl = _shortUrlRepository.Get(shortCode);
+        var shortUrl = _shortUrlService.GetByCode(shortCode);
 
         if (shortUrl is null)
         {
