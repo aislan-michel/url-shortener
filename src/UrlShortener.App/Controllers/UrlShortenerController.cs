@@ -25,25 +25,34 @@ public class UrlShortenerController : Controller
     }
 
     [HttpGet("")]
-    public IActionResult Index(string? shortCode = null)
+    public IActionResult Index(string? shortCode = null, int page = 1, int pageSize = 10)
     {
-        ViewData["shortCode"] = shortCode;
-
         var shortUrls = _shortUrlService.GetAll();
 
-        if (string.IsNullOrWhiteSpace(shortCode))
+        if (!string.IsNullOrWhiteSpace(shortCode))
         {
-            return View(shortUrls);
+            shortUrls = shortUrls.Where(x => x.ShortCode.Contains(shortCode)).ToArray();
         }
 
-        shortUrls = shortUrls.Where(x => x.ShortCode.Contains(shortCode)).ToArray();
-
-        if (shortUrls.Length == 0)
+        var totalItems = shortUrls.Length;
+        if (pageSize <= 0)
         {
-            return View(new List<ShortUrl>());
+            pageSize = 10;
         }
 
-        return View(shortUrls);
+        var totalPages = totalItems == 0 ? 1 : (int)Math.Ceiling(totalItems / (double)pageSize);
+        if (page < 1)
+        {
+            page = 1;
+        }
+        else if (page > totalPages)
+        {
+            page = totalPages;
+        }
+
+        var pagedUrls = shortUrls.Skip((page - 1) * pageSize).Take(pageSize).ToArray();
+
+        return View(new ShortUrlListViewModel(pagedUrls, shortCode, page, pageSize, totalItems));
     }
 
     [HttpGet("Create")]

@@ -1,0 +1,1 @@
+cd /d/dev/url-shortener/src/UrlShortener.App && docker stop urlshortener || true && docker rm urlshortener || true && docker build -t urlshortener . && docker run -d -p 8080:80 --name urlshortener urlshortener

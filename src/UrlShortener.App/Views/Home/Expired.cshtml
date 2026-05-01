@@ -2,7 +2,12 @@
     ViewData["Title"] = "Expired";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Url is Expired</h1>
-    <p><a href="@Url.Action("Index", "UrlShortener")">back to urls list</a></p>
-</div>
+<main class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-sm text-center p-4">
+            <h1 class="display-5 mb-3">URL expirada</h1>
+            <p class="text-muted mb-4">Este link já atingiu sua data de validade.</p>
+            <a class="btn btn-outline-primary btn-sm" asp-controller="UrlShortener" asp-action="Index">Voltar para lista</a>
+        </div>
+    </div>
+</main>

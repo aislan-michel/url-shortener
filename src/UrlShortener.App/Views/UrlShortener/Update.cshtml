@@ -4,12 +4,36 @@
     ViewData["Title"] = "Update";
 }
 
+<main class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <header class="mb-4">
+                    <h1 class="h5 mb-1">Atualizar expiração</h1>
+                    <p class="text-muted mb-0">Ajuste a data de validade deste link curto de forma rápida e acessível.</p>
+                </header>
 
-<form method="post" asp-action="Update" asp-route-id="@Model.ShortCode">
-    <div class="mb-3">
-        <label class="form-label mt-2">Expires in</label>
-        <input class="form-control" type="date" name="expires" value='@(Model.Expires.HasValue ? Model.Expires.Value.ToString("yyyy-MM-dd") : "")'/>
+                <form method="post" asp-action="Update" asp-route-id="@Model.ShortCode" novalidate>
+                    <fieldset>
+                        <legend class="visually-hidden">Formulário de atualização de expiração</legend>
+
+                        <div class="mb-4">
+                            <label for="expiresInput" class="form-label">Expires in</label>
+                            <input id="expiresInput" class="form-control" type="date" name="expires" value='@(Model.Expires.HasValue ? Model.Expires.Value.ToString("yyyy-MM-dd") : "")' aria-describedby="expiresHelp" />
+                            <div id="expiresHelp" class="form-text">Deixe em branco para não definir data de expiração.</div>
+                        </div>
+                    </fieldset>
+
+                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-between">
+                        <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                            <i class="bi bi-save me-2" aria-hidden="true"></i>Salvar
+                        </button>
+                        <a class="btn btn-outline-secondary btn-lg flex-fill" href='@Url.Action("Index", "UrlShortener")'>
+                            <i class="bi bi-arrow-left-short me-2" aria-hidden="true"></i>Voltar para lista
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a class="btn btn-secondary" href='@Url.Action("Index", "UrlShortener")'>Back to list</a>
-</form>
+</main>

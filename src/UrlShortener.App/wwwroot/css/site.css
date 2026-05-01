@@ -18,18 +18,132 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #eff2f7;
+  color: #23262b;
+  margin: 0;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+main {
+  flex: 1 0 auto;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.navbar-brand {
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.navbar-nav .nav-link {
+  color: #4a4f57;
+  transition: color 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #0d6efd;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.12rem rgba(13, 110, 253, 0.25);
+}
+
+.card,
+.navbar,
+footer,
+.form-control {
+  border-radius: 0.85rem;
+}
+
+.table {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
 }
 
 .copy {
-  cursor: pointer; padding-left: 10px; 
+  cursor: pointer;
+  padding-left: 10px;
+  color: #0d6efd;
+  transition: color 0.15s ease-in-out;
+}
+
+.btn-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.btn-icon .bi {
+  font-size: 1rem;
+}
+
+.url-copy-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.url-copy-link {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.url-copy-action {
+  flex: 0 0 auto;
+}
+
+.detail-key {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #495057;
+  min-width: 8rem;
+}
+
+.detail-value {
+  word-break: break-word;
+}
+
+.detail-value a {
+  color: #0d6efd;
+  text-decoration: none;
+}
+
+.detail-value a:hover {
+  color: #0a58ca;
+  text-decoration: underline;
+}
+
+.copy:hover {
+  color: #0a58ca;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.text-truncate-cell {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+footer {
+  background-color: #ffffff;
 }

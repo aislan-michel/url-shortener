@@ -2,7 +2,14 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p><a href="@Url.Action("Index", "UrlShortener")">shorten your url</a></p>
-</div>
+<main class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-sm text-center p-4">
+            <h1 class="display-5 mb-3">Bem-vindo ao Url Shortener</h1>
+            <p class="lead text-muted mb-4">Crie links curtos, compartilhe rapidamente e acompanhe o status das suas URLs.</p>
+            <a class="btn btn-primary btn-lg" asp-controller="UrlShortener" asp-action="Index">
+                <i class="bi bi-link-45deg me-2"></i> Encurtar URL
+            </a>
+        </div>
+    </div>
+</main>

@@ -4,24 +4,68 @@
     ViewData["Title"] = "Details";
 }
 
-<ul class="list-group">
-    <li class="list-group-item">Original URL: @Model.OriginalUrl</li>
-    <li class="list-group-item">Short Code: @Model.ShortCode</li>
-    <li class="list-group-item">Short URL: @Model.ShortUrlFull</li>
-    <li class="list-group-item">Created at: @Model.CreatedAt.ToString("dd/MM/yyyy")</li>
-    <li class="list-group-item">Expires in: @(Model.Expires.HasValue ? Model.Expires.Value.ToString("dd/MM/yyyy") : "N/A")</li>
-    <li class="list-group-item">
-        Status:                             
-        @if(Model.Active)
-        {
-            <span class="badge bg-success">Active</span>
-        }
-        else
-        {
-            <span class="badge bg-danger">Inactive</span>
-        }
-    </li>
-    <li class="list-group-item">Clicks: @Model.ClickCounter</li>
-</ul>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="mb-3">
+                    <h2 class="h5 mb-1">Detalhes do link</h2>
+                    <p class="text-muted mb-0">Veja as informações completas desta URL encurtada.</p>
+                </div>
 
-<a class="btn btn-secondary mt-3" asp-action="Index">Back to list</a>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-start">
+                        <span class="detail-key">URL Original</span>
+                        <span class="detail-value flex-fill">
+                            <a href="@Model.OriginalUrl" target="_blank">@Model.OriginalUrl</a>
+                        </span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-center">
+                        <span class="detail-key">Código</span>
+                        <span class="detail-value">@Model.ShortCode</span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-start">
+                        <span class="detail-key">URL encurtada</span>
+                        <span class="detail-value flex-fill">
+                            <a href="@Model.ShortUrlFull" target="_blank">@Model.ShortUrlFull</a>
+                        </span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-center">
+                        <span class="detail-key">Criado em</span>
+                        <span class="detail-value">@Model.CreatedAt.ToString("dd/MM/yyyy")</span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-center">
+                        <span class="detail-key">Expira em</span>
+                        <span class="detail-value">@(Model.Expires.HasValue ? Model.Expires.Value.ToString("dd/MM/yyyy") : "N/A")</span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-center">
+                        <span class="detail-key">Status</span>
+                        <span class="detail-value">
+                            @if (Model.Active)
+                            {
+                                <span class="badge bg-success">Ativo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inativo</span>
+                            }
+                        </span>
+                    </li>
+                    <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-center">
+                        <span class="detail-key">Cliques</span>
+                        <span class="detail-value">@Model.ClickCounter</span>
+                    </li>
+                </ul>
+
+                <div class="mt-4 d-flex flex-column flex-sm-row gap-2">
+                    <a class="btn btn-outline-secondary btn-sm" asp-action="Index">
+                        <i class="bi bi-arrow-left-short me-2" aria-hidden="true"></i>Voltar
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="@Model.ShortUrlFull" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-box-arrow-up-right me-2" aria-hidden="true"></i>Abrir link
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
