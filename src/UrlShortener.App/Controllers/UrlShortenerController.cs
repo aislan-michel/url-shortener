@@ -48,6 +48,7 @@ public class UrlShortenerController : Controller
         {
             page = totalPages;
         }
+        TempData["Page"] = page;
 
         var pagedUrls = shortUrls.Skip((page - 1) * pageSize).Take(pageSize).ToArray();
 
@@ -82,7 +83,7 @@ public class UrlShortenerController : Controller
             return View(createShortUrl);
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), new { page = TempData["Page"] });
     }
 
     [HttpGet("Details/{shortCode}")]
@@ -94,7 +95,22 @@ public class UrlShortenerController : Controller
             return NotFound();
         }
 
-        return View(shortUrl);
+        var shortUrlDetailsViewModel = new ShortUrlDetailsViewModel
+        {
+            OriginalUrl = shortUrl.OriginalUrl,
+            ShortCode = shortUrl.ShortCode,
+            ShortUrlFull = shortUrl.ShortUrlFull,
+            CreatedAt = shortUrl.CreatedAt,
+            Expires = shortUrl.Expires,
+            Status = new StatusViewModel
+            {
+                Value = shortUrl.Status.Value,
+                Description = shortUrl.Status.Description
+            },
+            ClickCount = shortUrl.ClickCounter
+        };
+
+        return View(shortUrlDetailsViewModel);
     }
 
     [HttpGet("Update/{shortCode}")]
@@ -122,7 +138,7 @@ public class UrlShortenerController : Controller
             return NotFound();
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), new { page = TempData["Page"] });
     }
 
     [HttpGet("Delete/{shortCode}")]
@@ -130,7 +146,7 @@ public class UrlShortenerController : Controller
     {
         _shortUrlService.Delete(shortCode);
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), new { page = TempData["Page"] });
     }
 
     [HttpGet("Activate/{shortCode}")]
@@ -145,7 +161,7 @@ public class UrlShortenerController : Controller
             return NotFound();
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), new { page = TempData["Page"] });
     }
 
     [HttpGet("Deactivate/{shortCode}")]
@@ -153,14 +169,14 @@ public class UrlShortenerController : Controller
     {
         try
         {
-            _shortUrlService.Deactivate(shortCode);
+            _shortUrlService.Deactivate(shortCode, "Desativado manualmente pelo usuário.");
         }
         catch (KeyNotFoundException)
         {
             return NotFound();
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), new { page = TempData["Page"] });
     }
 
     [HttpGet("QrCode/{shortCode}")]

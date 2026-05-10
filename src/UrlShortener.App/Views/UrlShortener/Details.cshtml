@@ -1,4 +1,4 @@
-@model UrlShortener.App.Models.ShortUrl
+@model UrlShortener.App.Models.ShortUrlDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -64,12 +64,12 @@
                     </li>
                     <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-center">
                         <span class="detail-key">Cliques</span>
-                        <span class="detail-value">@Model.ClickCounter</span>
+                        <span class="detail-value">@Model.ClickCount</span>
                     </li>
                 </ul>
 
                 <div class="mt-4 d-flex flex-column flex-sm-row gap-2">
-                    <a class="btn btn-outline-secondary btn-sm" asp-action="Index">
+                    <a class="btn btn-outline-secondary btn-sm" href="@Url.Action("Index", "UrlShortener", new { page = TempData["Page"] })">
                         <i class="bi bi-arrow-left-short me-2" aria-hidden="true"></i>Voltar
                     </a>
                     <a class="btn btn-primary btn-sm" href="@Model.ShortUrlFull" target="_blank" rel="noopener noreferrer">
