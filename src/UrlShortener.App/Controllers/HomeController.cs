@@ -36,7 +36,7 @@ public class HomeController : Controller
             return View("Expired");
         }
 
-        if (shortUrl.Status == "Inactive")
+        if (shortUrl.Status.Value == "Inactive")
         {
             return View("Inactive");
         }

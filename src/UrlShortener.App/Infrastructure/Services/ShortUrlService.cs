@@ -14,6 +14,8 @@ public sealed class ShortUrlService : IShortUrlService
 
     public ShortUrl[] GetAll() => _shortUrlRepository.Get();
 
+    public ShortUrl[] GetProcessingUrls() => _shortUrlRepository.GetProcessingUrls();
+
     public ShortUrl? GetByCode(string shortCode) => _shortUrlRepository.Get(shortCode);
 
     public void Create(ShortUrl shortUrl)
@@ -48,7 +50,7 @@ public sealed class ShortUrlService : IShortUrlService
         shortUrl.Activate();
     }
 
-    public void Deactivate(string shortCode)
+    public void Deactivate(string shortCode, string? description = null)
     {
         var shortUrl = GetByCode(shortCode);
         if (shortUrl is null)
@@ -56,7 +58,18 @@ public sealed class ShortUrlService : IShortUrlService
             throw new KeyNotFoundException("Short URL not found.");
         }
 
-        shortUrl.Deactivate();
+        shortUrl.Deactivate(description);
+    }
+
+    public void Invalidate(string shortCode, string? description = null)
+    {
+        var shortUrl = GetByCode(shortCode);
+        if (shortUrl is null)
+        {
+            throw new KeyNotFoundException("Short URL not found.");
+        }
+
+        shortUrl.Invalidate(description);
     }
 
     public void Delete(string shortCode)

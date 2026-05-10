@@ -74,13 +74,21 @@
                                         <th scope="row">@shortUrl.ShortCode</th>
                                         <td>@shortUrl.CreatedAt.ToString("dd/MM/yyyy")</td>
                                         <td>
-                                            @if (shortUrl.Status == "Active")
+                                            @if (shortUrl.Status.Value == "Active")
                                             {
                                                 <a href="@Url.Action("Deactivate", "UrlShortener", new { shortCode = shortUrl.ShortCode })" class="badge bg-success text-decoration-none" aria-label="Desativar link curto">Ativo</a>
                                             }
-                                            else if (shortUrl.Status == "Inactive")
+                                            else if (shortUrl.Status.Value == "Inactive")
                                             {
                                                 <a href="@Url.Action("Activate", "UrlShortener", new { shortCode = shortUrl.ShortCode })" class="badge bg-danger text-decoration-none" aria-label="Ativar link curto">Inativo</a>
+                                            } 
+                                            else if (shortUrl.Status.Value == "Processing")
+                                            {
+                                                <span class="badge bg-info text-dark" aria-label="Link curto em processamento">Processando</span>
+                                            }                                            
+                                            else if (shortUrl.Status.Value == "Invalid")
+                                            {
+                                                <span class="badge bg-warning text-dark" aria-label="Link curto inválido">Inválido</span>
                                             }
                                         </td>
                                         <td>
@@ -167,13 +175,21 @@
                                                     <h5 class="h6 mb-1">@shortUrl.ShortCode</h5>
                                                     <span class="text-muted small">Criado em @shortUrl.CreatedAt.ToString("dd/MM/yyyy")</span>
                                                 </div>
-                                                @if (shortUrl.Status == "Active")
+                                                @if (shortUrl.Status.Value == "Active")
                                                 {
                                                     <a href="@Url.Action("Deactivate", "UrlShortener", new { shortCode = shortUrl.ShortCode })" class="badge bg-success text-decoration-none" aria-label="Desativar link curto">Ativo</a>
                                                 }
-                                                else if (shortUrl.Status == "Inactive")
+                                                else if (shortUrl.Status.Value == "Inactive")
                                                 {
                                                     <a href="@Url.Action("Activate", "UrlShortener", new { shortCode = shortUrl.ShortCode })" class="badge bg-danger text-decoration-none" aria-label="Ativar link curto">Inativo</a>
+                                                } 
+                                                else if (shortUrl.Status.Value == "Processing")
+                                                {
+                                                    <span class="badge bg-info text-dark" aria-label="Link curto em processamento">Processando</span>
+                                                }                                            
+                                                else if (shortUrl.Status.Value == "Invalid")
+                                                {
+                                                    <span class="badge bg-warning text-dark" aria-label="Link curto inválido">Inválido</span>
                                                 }
                                             </div>
 

@@ -1,0 +1,1 @@
+dotnet watch --project src/UrlShortener.App/UrlShortener.App.csproj run

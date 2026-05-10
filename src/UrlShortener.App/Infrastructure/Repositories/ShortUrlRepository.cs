@@ -44,6 +44,11 @@ public sealed class ShortUrlRepository : IShortUrlRepository
         return ShortUrls.ToArray();
     }
 
+    public ShortUrl[] GetProcessingUrls()
+    {
+        return ShortUrls.Where(x => string.Equals(x.Status.Value, "Processing", StringComparison.OrdinalIgnoreCase)).ToArray();
+    }
+
     public void Delete(string shortCode)
     {
         var existing = Get(shortCode);

@@ -1,3 +1,4 @@
+using UrlShortener.App.Infrastructure.BackgroundServices;
 using UrlShortener.App.Infrastructure.Repositories;
 using UrlShortener.App.Infrastructure.Services;
 
@@ -11,6 +12,7 @@ builder.Services.AddScoped<IShortUrlService, ShortUrlService>();
 builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 
 builder.Services.AddHttpClient();
+builder.Services.AddHostedService<ValidateUrlService>();
 
 var app = builder.Build();
 

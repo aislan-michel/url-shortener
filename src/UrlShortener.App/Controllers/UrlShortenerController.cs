@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models;
 
@@ -9,18 +10,16 @@ public class UrlShortenerController : Controller
 {
     private readonly ILogger<UrlShortenerController> _logger;
     private readonly IShortUrlService _shortUrlService;
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IQrCodeService _qrCodeService;
+    
 
     public UrlShortenerController(
         ILogger<UrlShortenerController> logger,
         IShortUrlService shortUrlService,
-        IHttpClientFactory httpClientFactory,
         IQrCodeService qrCodeService)
     {
         _logger = logger;
         _shortUrlService = shortUrlService;
-        _httpClientFactory = httpClientFactory;
         _qrCodeService = qrCodeService;
     }
 
@@ -67,29 +66,6 @@ public class UrlShortenerController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(createShortUrl);
-        }
-
-        var httpClient = _httpClientFactory.CreateClient("validate-url");
-
-        httpClient.BaseAddress = new Uri(createShortUrl.Url);
-
-        var request = new HttpRequestMessage();
-
-        try
-        {
-            var response = await httpClient.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                ModelState.AddModelError(nameof(CreateShortUrl.Url), $"The URL '{createShortUrl.Url}' is not valid.");
-                return View(createShortUrl);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "URL validation failed for {Url}", createShortUrl.Url);
-            ModelState.AddModelError(nameof(CreateShortUrl.Url), $"The URL '{createShortUrl.Url}' is not valid.");
             return View(createShortUrl);
         }
 

@@ -41,13 +41,24 @@
                     <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-center">
                         <span class="detail-key">Status</span>
                         <span class="detail-value">
-                            @if (Model.Status == "Active")
+                            @if (Model.Status.Value == "Active")
                             {
                                 <span class="badge bg-success">Ativo</span>
                             }
-                            else if (Model.Status == "Inactive")
+                            else if (Model.Status.Value == "Inactive")
                             {
                                 <span class="badge bg-danger">Inativo</span>
+                                <small class="text-muted">@Model.Status.Description</small>
+                            } 
+                            else if (Model.Status.Value == "Processing")
+                            {
+                                <span class="badge bg-info text-dark">Processando</span>
+                                <small class="text-muted">@Model.Status.Description</small>
+                            }                                            
+                            else if (Model.Status.Value == "Invalid")
+                            {
+                                <span class="badge bg-warning text-dark">Inválido</span>
+                                <small class="text-muted">@Model.Status.Description</small>
                             }
                         </span>
                     </li>
