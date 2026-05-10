@@ -39,8 +39,8 @@ public class UrlShortenerControllerTests
         var result = controller.Index();
 
         var view = Assert.IsType<ViewResult>(result);
-        var model = Assert.IsAssignableFrom<ShortUrl[]>(view.Model!);
-        Assert.Single(model);
+        var model = Assert.IsAssignableFrom<ShortUrlListViewModel>(view.Model!);
+        Assert.Single(model.ShortUrls);
     }
 
     [Fact]

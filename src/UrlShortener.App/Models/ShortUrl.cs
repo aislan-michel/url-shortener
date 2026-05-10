@@ -4,12 +4,12 @@ public sealed class ShortUrl
 {
     private ShortUrl() { }
 
-    public ShortUrl(string shortCode, string originalUrl, string baseUrl, bool active)
+    public ShortUrl(string shortCode, string originalUrl, string baseUrl, string status)
     {
         ShortCode = shortCode;
         OriginalUrl = originalUrl;
         ShortUrlFull = GenerateShortUrlFull(baseUrl, shortCode);
-        Active = active;
+        Status = status;
     }
 
     public ShortUrl(string? shortCode, string originalUrl, string baseUrl, DateOnly? expires = null)
@@ -40,7 +40,7 @@ public sealed class ShortUrl
     public string ShortUrlFull { get; private set; } = string.Empty;
     public DateTime CreatedAt { get; private set; } = DateTime.Now;
     public DateOnly? Expires { get; private set; } = null;
-    public bool Active { get; private set; } = true;
+    public string Status { get; private set; } = "Active";
     public int ClickCounter { get; private set; } = 0;
 
     private string GenerateShortUrlFull(string baseUrl, string shortCode)
@@ -74,12 +74,12 @@ public sealed class ShortUrl
 
     public void Activate()
     {
-        Active = true;
+        Status = "Active";
     }
 
     public void Deactivate()
     {
-        Active = false;
+        Status = "Inactive";
     }
 
     public void Clicked()

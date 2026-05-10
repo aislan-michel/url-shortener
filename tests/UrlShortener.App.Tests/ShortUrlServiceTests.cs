@@ -94,12 +94,12 @@ public class ShortUrlServiceTests
         service.Deactivate("act123");
         var deactivated = service.GetByCode("act123");
         Assert.NotNull(deactivated);
-        Assert.False(deactivated!.Active);
+        Assert.True(deactivated!.Status == "Inactive");
 
         service.Activate("act123");
         var activated = service.GetByCode("act123");
         Assert.NotNull(activated);
-        Assert.True(activated!.Active);
+        Assert.True(activated!.Status == "Active");
     }
 
     [Fact]

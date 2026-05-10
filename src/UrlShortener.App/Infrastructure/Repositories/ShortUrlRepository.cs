@@ -8,7 +8,7 @@ public sealed class ShortUrlRepository : IShortUrlRepository
     [
         new("google", "https://www.google.com", "http://localhost:5282/"),
         new("youtube", "https://www.youtube.com", "http://localhost:5282/"),
-        new("wikipedia", "https://www.wikipedia.org", "http://localhost:5282/", false),
+        new("wikipedia", "https://www.wikipedia.org", "http://localhost:5282/", "Inactive"),
         new("amazon", "https://www.amazon.com", "http://localhost:5282/", DateOnly.FromDateTime(DateTime.Now.AddDays(-2))),
         new("facebook", "https://www.facebook.com", "http://localhost:5282/"),
         new("instagram", "https://www.instagram.com", "http://localhost:5282/"),

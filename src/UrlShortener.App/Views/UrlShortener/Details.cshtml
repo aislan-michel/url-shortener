@@ -41,11 +41,11 @@
                     <li class="list-group-item py-3 d-flex flex-column flex-md-row gap-3 align-items-center">
                         <span class="detail-key">Status</span>
                         <span class="detail-value">
-                            @if (Model.Active)
+                            @if (Model.Status == "Active")
                             {
                                 <span class="badge bg-success">Ativo</span>
                             }
-                            else
+                            else if (Model.Status == "Inactive")
                             {
                                 <span class="badge bg-danger">Inativo</span>
                             }

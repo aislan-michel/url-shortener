@@ -74,11 +74,11 @@
                                         <th scope="row">@shortUrl.ShortCode</th>
                                         <td>@shortUrl.CreatedAt.ToString("dd/MM/yyyy")</td>
                                         <td>
-                                            @if (shortUrl.Active)
+                                            @if (shortUrl.Status == "Active")
                                             {
                                                 <a href="@Url.Action("Deactivate", "UrlShortener", new { shortCode = shortUrl.ShortCode })" class="badge bg-success text-decoration-none" aria-label="Desativar link curto">Ativo</a>
                                             }
-                                            else
+                                            else if (shortUrl.Status == "Inactive")
                                             {
                                                 <a href="@Url.Action("Activate", "UrlShortener", new { shortCode = shortUrl.ShortCode })" class="badge bg-danger text-decoration-none" aria-label="Ativar link curto">Inativo</a>
                                             }
@@ -167,7 +167,14 @@
                                                     <h5 class="h6 mb-1">@shortUrl.ShortCode</h5>
                                                     <span class="text-muted small">Criado em @shortUrl.CreatedAt.ToString("dd/MM/yyyy")</span>
                                                 </div>
-                                                <span class="badge @(shortUrl.Active ? "bg-success" : "bg-danger")">@(shortUrl.Active ? "Ativo" : "Inativo")</span>
+                                                @if (shortUrl.Status == "Active")
+                                                {
+                                                    <a href="@Url.Action("Deactivate", "UrlShortener", new { shortCode = shortUrl.ShortCode })" class="badge bg-success text-decoration-none" aria-label="Desativar link curto">Ativo</a>
+                                                }
+                                                else if (shortUrl.Status == "Inactive")
+                                                {
+                                                    <a href="@Url.Action("Activate", "UrlShortener", new { shortCode = shortUrl.ShortCode })" class="badge bg-danger text-decoration-none" aria-label="Ativar link curto">Inativo</a>
+                                                }
                                             </div>
 
                                             <div class="mb-2">
