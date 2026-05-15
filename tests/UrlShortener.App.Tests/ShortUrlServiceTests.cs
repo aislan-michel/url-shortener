@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging.Abstractions;
-using UrlShortener.App.Controllers;
+﻿using Microsoft.EntityFrameworkCore;
+using UrlShortener.App.Infrastructure.Persistence;
 using UrlShortener.App.Infrastructure.Repositories;
 using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models;
@@ -10,9 +9,14 @@ namespace UrlShortener.App.Tests;
 
 public class ShortUrlServiceTests
 {
-    private ShortUrlRepository CreateRepository()
+    private static ShortUrlRepository CreateRepository()
     {
-        var repository = new ShortUrlRepository();
+        var options = new DbContextOptionsBuilder<UrlShortenerDbContext>()
+            .UseSqlite($"Data Source={Path.GetTempFileName()}")
+            .Options;
+        var dbContext = new UrlShortenerDbContext(options);
+        dbContext.Database.EnsureCreated();
+        var repository = new ShortUrlRepository(dbContext);
         repository.Clear();
         return repository;
     }
@@ -94,12 +98,12 @@ public class ShortUrlServiceTests
         service.Deactivate("act123");
         var deactivated = service.GetByCode("act123");
         Assert.NotNull(deactivated);
-        Assert.True(deactivated!.Status == "Inactive");
+        Assert.Equal("Inactive", deactivated!.Status.Value);
 
         service.Activate("act123");
         var activated = service.GetByCode("act123");
         Assert.NotNull(activated);
-        Assert.True(activated!.Status == "Active");
+        Assert.Equal("Active", activated!.Status.Value);
     }
 
     [Fact]

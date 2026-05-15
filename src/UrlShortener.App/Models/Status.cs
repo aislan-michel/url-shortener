@@ -1,5 +1,9 @@
+namespace UrlShortener.App.Models;
+
 public sealed class Status
 {
+    private Status() { }
+
     private readonly string[] ValidStatuses = ["Processing", "Active", "Inactive", "Invalid"];
 
     public Status(string value, string? description = null)

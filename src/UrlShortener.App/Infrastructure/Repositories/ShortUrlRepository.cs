@@ -1,52 +1,47 @@
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using UrlShortener.App.Infrastructure.Persistence;
 using UrlShortener.App.Models;
 
 namespace UrlShortener.App.Infrastructure.Repositories;
 
 public sealed class ShortUrlRepository : IShortUrlRepository
 {
-    private static IList<ShortUrl> ShortUrls =
-    [
-        new("google", "https://www.google.com", "http://localhost:5282/"),
-        new("youtube", "https://www.youtube.com", "http://localhost:5282/"),
-        new("wikipedia", "https://www.wikipedia.org", "http://localhost:5282/", "Inactive"),
-        new("amazon", "https://www.amazon.com", "http://localhost:5282/", DateOnly.FromDateTime(DateTime.Now.AddDays(-2))),
-        new("facebook", "https://www.facebook.com", "http://localhost:5282/"),
-        new("instagram", "https://www.instagram.com", "http://localhost:5282/"),
-        new("twitter", "https://www.twitter.com", "http://localhost:5282/"),
-        new("linkedin", "https://www.linkedin.com", "http://localhost:5282/"),
-        new("netflix", "https://www.netflix.com", "http://localhost:5282/"),
-        new("spotify", "https://www.spotify.com", "http://localhost:5282/"),
-        new("github", "https://www.github.com", "http://localhost:5282/"),
-        new("reddit", "https://www.reddit.com", "http://localhost:5282/"),
-        new("office", "https://www.office.com", "http://localhost:5282/"),
-        new("whatsapp", "https://www.whatsapp.com", "http://localhost:5282/"),
-        new("stackoverflow", "https://stackoverflow.com", "http://localhost:5282/")
-    ];
+    private readonly UrlShortenerDbContext _dbContext;
+
+    public ShortUrlRepository(UrlShortenerDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public void Add(ShortUrl shortUrl)
     {
-        ShortUrls.Add(shortUrl);
+        _dbContext.ShortUrls.Add(shortUrl);
+        _dbContext.SaveChanges();
     }
 
     public void Clear()
     {
-        ShortUrls.Clear();
+        _dbContext.ShortUrls.RemoveRange(_dbContext.ShortUrls);
+        _dbContext.SaveChanges();
     }
 
     public ShortUrl? Get(string shortCode)
     {
-        return ShortUrls.FirstOrDefault(x =>
-            string.Equals(x.ShortCode, shortCode, StringComparison.OrdinalIgnoreCase));
+        return _dbContext.ShortUrls.FirstOrDefault(x =>
+            EF.Functions.Collate(x.ShortCode, "NOCASE") == shortCode);
     }
 
     public ShortUrl[] Get()
     {
-        return ShortUrls.ToArray();
+        return _dbContext.ShortUrls.OrderByDescending(x => x.CreatedAt).ToArray();
     }
 
     public ShortUrl[] GetProcessingUrls()
     {
-        return ShortUrls.Where(x => string.Equals(x.Status.Value, "Processing", StringComparison.OrdinalIgnoreCase)).ToArray();
+        return _dbContext.ShortUrls
+            .Where(x => EF.Functions.Collate(x.Status.Value, "NOCASE") == "Processing")
+            .ToArray();
     }
 
     public void Delete(string shortCode)
@@ -54,7 +49,20 @@ public sealed class ShortUrlRepository : IShortUrlRepository
         var existing = Get(shortCode);
         if (existing is not null)
         {
-            ShortUrls.Remove(existing);
+            _dbContext.ShortUrls.Remove(existing);
+            _dbContext.SaveChanges();
         }
+    }
+    
+    public void SaveChanges()
+    {
+        _dbContext.SaveChanges();
+    }
+
+    public bool Exists(string? shortCode, string? originalUrl)
+    {
+        return _dbContext.ShortUrls.Any(x =>
+            (!string.IsNullOrWhiteSpace(shortCode) && EF.Functions.Collate(x.ShortCode, "NOCASE") == shortCode) ||
+            (!string.IsNullOrWhiteSpace(originalUrl) && EF.Functions.Collate(x.OriginalUrl, "NOCASE") == originalUrl));
     }
 }

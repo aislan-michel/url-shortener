@@ -20,9 +20,10 @@ public sealed class ShortUrlService : IShortUrlService
 
     public void Create(ShortUrl shortUrl)
     {
-        if (Exists(shortUrl.ShortCode))
+        var exists = _shortUrlRepository.Exists(shortUrl.ShortCode, shortUrl.OriginalUrl);
+        if (exists)
         {
-            throw new InvalidOperationException("A short code with this value already exists.");
+            throw new InvalidOperationException("A short code or original URL with this value already exists.");
         }
 
         _shortUrlRepository.Add(shortUrl);
@@ -37,6 +38,7 @@ public sealed class ShortUrlService : IShortUrlService
         }
 
         shortUrl.UpdateExpiresDate(expires);
+        _shortUrlRepository.SaveChanges();
     }
 
     public void Activate(string shortCode)
@@ -48,6 +50,7 @@ public sealed class ShortUrlService : IShortUrlService
         }
 
         shortUrl.Activate();
+        _shortUrlRepository.SaveChanges();
     }
 
     public void Deactivate(string shortCode, string? description = null)
@@ -59,6 +62,7 @@ public sealed class ShortUrlService : IShortUrlService
         }
 
         shortUrl.Deactivate(description);
+        _shortUrlRepository.SaveChanges();
     }
 
     public void Invalidate(string shortCode, string? description = null)
@@ -70,6 +74,7 @@ public sealed class ShortUrlService : IShortUrlService
         }
 
         shortUrl.Invalidate(description);
+        _shortUrlRepository.SaveChanges();
     }
 
     public void Delete(string shortCode)

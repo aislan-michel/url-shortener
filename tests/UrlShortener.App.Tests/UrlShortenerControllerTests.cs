@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using UrlShortener.App.Controllers;
+using Microsoft.EntityFrameworkCore;
+using UrlShortener.App.Infrastructure.Persistence;
 using UrlShortener.App.Infrastructure.Repositories;
 using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models;
@@ -13,6 +15,18 @@ namespace UrlShortener.App.Tests;
 
 public class UrlShortenerControllerTests
 {
+    private static ShortUrlRepository CreateRepository()
+    {
+        var options = new DbContextOptionsBuilder<UrlShortenerDbContext>()
+            .UseSqlite($"Data Source={Path.GetTempFileName()}")
+            .Options;
+        var dbContext = new UrlShortenerDbContext(options);
+        dbContext.Database.EnsureCreated();
+        var repository = new ShortUrlRepository(dbContext);
+        repository.Clear();
+        return repository;
+    }
+
     private UrlShortenerController CreateController(IShortUrlService service, HttpMessageHandler handler, IQrCodeService qrCodeService)
     {
         var factory = new FakeHttpClientFactory(handler);
@@ -30,8 +44,7 @@ public class UrlShortenerControllerTests
     [Fact]
     public void Index_ReturnsView_WithAllShortUrls()
     {
-        var repository = new ShortUrlRepository();
-        repository.Clear();
+        var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         service.Create(new ShortUrl("abc123", "https://example.com", "localhost:5000/"));
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.OK), new FakeQrCodeService());
@@ -46,8 +59,7 @@ public class UrlShortenerControllerTests
     [Fact]
     public void Details_ReturnsNotFound_ForMissingCode()
     {
-        var repository = new ShortUrlRepository();
-        repository.Clear();
+        var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.OK), new FakeQrCodeService());
 
@@ -59,8 +71,7 @@ public class UrlShortenerControllerTests
     [Fact]
     public void Details_ReturnsView_ForExistingShortCode()
     {
-        var repository = new ShortUrlRepository();
-        repository.Clear();
+        var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         service.Create(new ShortUrl("abc123", "https://example.com", "localhost:5000/"));
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.OK), new FakeQrCodeService());
@@ -75,8 +86,7 @@ public class UrlShortenerControllerTests
     [Fact]
     public async Task CreatePost_ReturnsView_WhenModelInvalid()
     {
-        var repository = new ShortUrlRepository();
-        repository.Clear();
+        var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.OK), new FakeQrCodeService());
         controller.ModelState.AddModelError("Url", "Required");
@@ -90,8 +100,7 @@ public class UrlShortenerControllerTests
     [Fact]
     public async Task CreatePost_ReturnsView_WhenUrlValidationFails()
     {
-        var repository = new ShortUrlRepository();
-        repository.Clear();
+        var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.BadRequest), new FakeQrCodeService());
 
@@ -106,8 +115,7 @@ public class UrlShortenerControllerTests
     [Fact]
     public async Task CreatePost_Redirects_WhenSuccessful()
     {
-        var repository = new ShortUrlRepository();
-        repository.Clear();
+        var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.OK), new FakeQrCodeService());
 
@@ -120,8 +128,7 @@ public class UrlShortenerControllerTests
     [Fact]
     public void QrCode_ReturnsJson_ForExistingShortCode()
     {
-        var repository = new ShortUrlRepository();
-        repository.Clear();
+        var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         service.Create(new ShortUrl("abc123", "https://example.com", "localhost:5000/"));
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.OK), new FakeQrCodeService());
