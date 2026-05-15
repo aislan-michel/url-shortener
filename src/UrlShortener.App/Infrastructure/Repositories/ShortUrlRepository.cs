@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using UrlShortener.App.Infrastructure.Persistence;
 using UrlShortener.App.Models;
