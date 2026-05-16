@@ -5,7 +5,7 @@ using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models.Entities;
 using Xunit;
 
-namespace UrlShortener.App.Tests;
+namespace UrlShortener.App.Tests.Infrastructure.Services;
 
 public class ShortUrlServiceTests
 {
