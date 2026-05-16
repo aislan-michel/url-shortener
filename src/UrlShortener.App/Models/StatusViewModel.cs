@@ -1,3 +1,5 @@
+namespace UrlShortener.App.Models;
+
 public sealed class StatusViewModel
 {
     public string Value { get; set; } = string.Empty;

@@ -9,7 +9,10 @@ using UrlShortener.App.Infrastructure.Persistence;
 using UrlShortener.App.Infrastructure.Repositories;
 using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models;
+using UrlShortener.App.Models.Entities;
 using Xunit;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Moq;
 
 namespace UrlShortener.App.Tests;
 
@@ -29,8 +32,10 @@ public class UrlShortenerControllerTests
 
     private UrlShortenerController CreateController(IShortUrlService service, HttpMessageHandler handler, IQrCodeService qrCodeService)
     {
-        var factory = new FakeHttpClientFactory(handler);
-        var controller = new UrlShortenerController(new NullLogger<UrlShortenerController>(), service, factory, qrCodeService);
+        var controller = new UrlShortenerController(new NullLogger<UrlShortenerController>(), service, qrCodeService)
+        {
+            TempData = new Mock<ITempDataDictionary>().Object
+        };
         controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext
@@ -79,47 +84,49 @@ public class UrlShortenerControllerTests
         var result = controller.Details("abc123");
 
         var view = Assert.IsType<ViewResult>(result);
-        var model = Assert.IsType<ShortUrl>(view.Model);
+        var model = Assert.IsType<ShortUrlDetailsViewModel>(view.Model);
         Assert.Equal("abc123", model.ShortCode);
     }
 
     [Fact]
-    public async Task CreatePost_ReturnsView_WhenModelInvalid()
+    public void CreatePost_ReturnsView_WhenModelInvalid()
     {
         var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.OK), new FakeQrCodeService());
         controller.ModelState.AddModelError("Url", "Required");
 
-        var result = await controller.Create(new CreateShortUrl());
+        var result = controller.Create(new ShortUrlCreateInputModel());
 
         var view = Assert.IsType<ViewResult>(result);
-        Assert.IsType<CreateShortUrl>(view.Model);
+        Assert.IsType<ShortUrlCreateInputModel>(view.Model);
     }
 
     [Fact]
-    public async Task CreatePost_ReturnsView_WhenUrlValidationFails()
+    public void CreatePost_ReturnsView_WhenUrlValidationFails()
     {
         var repository = CreateRepository();
-        var service = new ShortUrlService(repository);
-        var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.BadRequest), new FakeQrCodeService());
+        var serviceMock = new Mock<IShortUrlService>();
+        serviceMock.Setup(s => s.Create(It.IsAny<ShortUrl>())).Throws(new InvalidOperationException("Invalid URL"));
 
-        var result = await controller.Create(new CreateShortUrl { Url = "https://example.com" });
+        var controller = CreateController(serviceMock.Object, new FakeHttpMessageHandler(HttpStatusCode.BadRequest), new FakeQrCodeService());
+
+        var result = controller.Create(new ShortUrlCreateInputModel { Url = "https://example.com" });
 
         var view = Assert.IsType<ViewResult>(result);
-        Assert.IsType<CreateShortUrl>(view.Model);
+        Assert.IsType<ShortUrlCreateInputModel>(view.Model);
         Assert.False(controller.ModelState.IsValid);
-        Assert.Contains("Url", controller.ModelState.Keys);
+        Assert.Contains("ShortCode", controller.ModelState.Keys);
     }
 
     [Fact]
-    public async Task CreatePost_Redirects_WhenSuccessful()
+    public void CreatePost_Redirects_WhenSuccessful()
     {
         var repository = CreateRepository();
         var service = new ShortUrlService(repository);
         var controller = CreateController(service, new FakeHttpMessageHandler(HttpStatusCode.OK), new FakeQrCodeService());
 
-        var result = await controller.Create(new CreateShortUrl { Url = "https://example.com" });
+        var result = controller.Create(new ShortUrlCreateInputModel { Url = "https://example.com" });
 
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Index", redirect.ActionName);

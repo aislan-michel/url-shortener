@@ -1,5 +1,5 @@
 using UrlShortener.App.Infrastructure.Repositories;
-using UrlShortener.App.Models;
+using UrlShortener.App.Models.Entities;
 
 namespace UrlShortener.App.Infrastructure.Services;
 

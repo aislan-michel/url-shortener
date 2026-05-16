@@ -1,3 +1,5 @@
+using UrlShortener.App.Models.Entities;
+
 namespace UrlShortener.App.Models;
 
 public sealed class ShortUrlListViewModel

@@ -2,7 +2,7 @@
 using UrlShortener.App.Infrastructure.Persistence;
 using UrlShortener.App.Infrastructure.Repositories;
 using UrlShortener.App.Infrastructure.Services;
-using UrlShortener.App.Models;
+using UrlShortener.App.Models.Entities;
 using Xunit;
 
 namespace UrlShortener.App.Tests;

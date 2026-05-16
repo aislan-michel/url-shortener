@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using UrlShortener.App.Controllers;
+using UrlShortener.App.Infrastructure.Persistence;
 using UrlShortener.App.Infrastructure.Repositories;
 using UrlShortener.App.Infrastructure.Services;
-using UrlShortener.App.Models;
+using UrlShortener.App.Models.Entities;
 using Xunit;
 
 namespace UrlShortener.App.Tests;
@@ -18,7 +21,7 @@ public class HomeControllerTests
     [Fact]
     public void Index_ReturnsRedirectResult_ForActiveShortUrl()
     {
-        var repository = new ShortUrlRepository();
+        var repository = new ShortUrlRepository(CreateDbContext());
         repository.Clear();
         var service = new ShortUrlService(repository);
         var shortUrl = new ShortUrl("abc123", "https://example.com", "localhost:5000/");
@@ -35,7 +38,7 @@ public class HomeControllerTests
     [Fact]
     public void Index_ReturnsNotFound_ForMissingShortCode()
     {
-        var repository = new ShortUrlRepository();
+        var repository = new ShortUrlRepository(CreateDbContext());
         repository.Clear();
         var service = new ShortUrlService(repository);
         var controller = CreateController(service);
@@ -48,7 +51,7 @@ public class HomeControllerTests
     [Fact]
     public void Index_ReturnsExpiredView_ForExpiredShortUrl()
     {
-        var repository = new ShortUrlRepository();
+        var repository = new ShortUrlRepository(CreateDbContext());
         repository.Clear();
         var service = new ShortUrlService(repository);
         var shortUrl = new ShortUrl("expired", "https://example.com", "localhost:5000/");
@@ -66,7 +69,7 @@ public class HomeControllerTests
     [Fact]
     public void Index_ReturnsInactiveView_ForInactiveShortUrl()
     {
-        var repository = new ShortUrlRepository();
+        var repository = new ShortUrlRepository(CreateDbContext());
         repository.Clear();
         var service = new ShortUrlService(repository);
         var shortUrl = new ShortUrl("inactive", "https://example.com", "localhost:5000/");
@@ -78,5 +81,21 @@ public class HomeControllerTests
 
         var view = Assert.IsType<ViewResult>(result);
         Assert.Equal("Inactive", view.ViewName);
+    }
+
+    private UrlShortenerDbContext CreateDbContext()
+    {
+        var connection = new SqliteConnection("Filename=:memory:");
+        connection.Open();
+
+        var options = new DbContextOptionsBuilder<UrlShortenerDbContext>()
+            .UseSqlite(connection)
+            .Options;
+
+        var context = new UrlShortenerDbContext(options);
+
+        context.Database.EnsureCreated();
+
+        return context;
     }
 }

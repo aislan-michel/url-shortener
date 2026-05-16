@@ -1,5 +1,4 @@
-using System.Linq.Expressions;
-using UrlShortener.App.Models;
+using UrlShortener.App.Models.Entities;
 
 namespace UrlShortener.App.Infrastructure.Repositories;
 

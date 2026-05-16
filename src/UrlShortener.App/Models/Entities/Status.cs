@@ -1,4 +1,4 @@
-namespace UrlShortener.App.Models;
+namespace UrlShortener.App.Models.Entities;
 
 public sealed class Status
 {
@@ -16,7 +16,7 @@ public sealed class Status
         Description = description;
     }
 
-    public string Value { get; private set; }
+    public string Value { get; private set; } = string.Empty;
 
     public string? Description { get; private set; }
 }

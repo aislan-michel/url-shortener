@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UrlShortener.App.Models;
 
-public sealed class CreateShortUrl
+public sealed class ShortUrlCreateInputModel
 {
     [MaxLength(8, ErrorMessage = "Short code must have a maximum of 8 characters.")]
     public string? ShortCode { get; set; } = null;

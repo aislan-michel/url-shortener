@@ -3,7 +3,7 @@ using UrlShortener.App.Infrastructure.BackgroundServices;
 using UrlShortener.App.Infrastructure.Persistence;
 using UrlShortener.App.Infrastructure.Repositories;
 using UrlShortener.App.Infrastructure.Services;
-using UrlShortener.App.Models;
+using UrlShortener.App.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 

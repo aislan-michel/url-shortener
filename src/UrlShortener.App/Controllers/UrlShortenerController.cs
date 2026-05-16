@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models;
+using UrlShortener.App.Models.Entities;
 
 namespace UrlShortener.App.Controllers;
 
@@ -12,7 +12,6 @@ public class UrlShortenerController : Controller
     private readonly IShortUrlService _shortUrlService;
     private readonly IQrCodeService _qrCodeService;
     
-
     public UrlShortenerController(
         ILogger<UrlShortenerController> logger,
         IShortUrlService shortUrlService,
@@ -58,12 +57,12 @@ public class UrlShortenerController : Controller
     [HttpGet("Create")]
     public IActionResult Create()
     {
-        return View(new CreateShortUrl());
+        return View(new ShortUrlCreateInputModel());
     }
 
     [HttpPost("Create")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateShortUrl createShortUrl)
+    public IActionResult Create(ShortUrlCreateInputModel createShortUrl)
     {
         if (!ModelState.IsValid)
         {

@@ -1,4 +1,4 @@
-﻿namespace UrlShortener.App.Models;
+﻿namespace UrlShortener.App.Models.Entities;
 
 public sealed class ShortUrl
 {
