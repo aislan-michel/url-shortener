@@ -38,7 +38,7 @@ public class ShortUrlServiceTests
     }
 
     [Fact]
-    public void Create_Throws_WhenDuplicateShortCodeExists()
+    public void Create_Throws_WhenDuplicateShortCodeOrUrlExists()
     {
         var repository = CreateRepository();
         Assert.Empty(repository.Get());
@@ -53,7 +53,7 @@ public class ShortUrlServiceTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => service.Create(duplicate));
 
-        Assert.Contains("short code", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("A short code or original URL with this value already exists.", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

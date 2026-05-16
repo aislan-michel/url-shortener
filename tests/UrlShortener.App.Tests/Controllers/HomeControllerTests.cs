@@ -9,7 +9,7 @@ using UrlShortener.App.Infrastructure.Services;
 using UrlShortener.App.Models.Entities;
 using Xunit;
 
-namespace UrlShortener.App.Tests;
+namespace UrlShortener.App.Tests.Controllers;
 
 public class HomeControllerTests
 {

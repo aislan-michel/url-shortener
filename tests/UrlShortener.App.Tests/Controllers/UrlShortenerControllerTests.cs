@@ -14,7 +14,7 @@ using Xunit;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 
-namespace UrlShortener.App.Tests;
+namespace UrlShortener.App.Tests.Controllers;
 
 public class UrlShortenerControllerTests
 {
